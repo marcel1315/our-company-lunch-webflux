@@ -1,0 +1,16 @@
+### Create diner
+POST http://localhost:8080/api/diners
+Content-Type: application/json
+
+{
+  "name": "Fine Noodle",
+  "link": "www.finenoodle.com"
+}
+
+> {%
+  client.test("Diner created", function() {
+    client.assert(response.status === 200);
+    client.assert(response.body.name === "Fine Noodle");
+    client.assert(response.body.link === "www.finenoodle.com");
+  });
+%}
