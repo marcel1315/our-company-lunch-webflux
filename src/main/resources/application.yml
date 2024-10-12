@@ -1,3 +1,7 @@
 spring:
   application:
     name: our-company-lunch-webflux
+  r2dbc:
+    url: r2dbc:mariadb://localhost:3306/ourcompanylunchwebflux
+    username: root
+    password: a1234

@@ -1,6 +1,6 @@
 package com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto;
 
-import com.marceldev.ourcompanylunchwebflux.domain.diner.Diner;
+import com.marceldev.ourcompanylunchwebflux.domain.diner.DinerEntity;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,10 +16,10 @@ public class CreateDinerResponse {
     this.link = link;
   }
 
-  public static CreateDinerResponse of(Diner diner) {
+  public static CreateDinerResponse of(DinerEntity dinerEntity) {
     return CreateDinerResponse.builder()
-        .name(diner.getName())
-        .link(diner.getLink())
+        .name(dinerEntity.getName())
+        .link(dinerEntity.getLink())
         .build();
   }
 }

@@ -1,0 +1,9 @@
+services:
+  mariadb:
+    image: mariadb:10.11.8
+    container_name: ourcompanylunch-webflux
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ourcompanylunchwebflux
+      MYSQL_ROOT_PASSWORD: a1234

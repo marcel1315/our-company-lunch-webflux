@@ -1,4 +1,4 @@
-### Create diner
+### Create dinerEntity
 POST http://localhost:8080/api/diners
 Content-Type: application/json
 
