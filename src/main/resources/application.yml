@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: our-company-lunch-webflux
