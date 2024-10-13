@@ -32,12 +32,7 @@ public class DinerService {
   }
 
   public Mono<Page<GetDinerListResponse>> getDinerList(GetDinerListRequest request) {
-    Pageable pageable = PageRequest.of(
-        request.getPage(),
-        request.getSize(),
-        Sort.by(getOrder(request))
-    );
-
+    Pageable pageable = getPageable(request);
     Mono<Long> total = dinerRepository.count();
     Flux<GetDinerListResponse> diners = dinerRepository.findAllBy(pageable)
         .map(GetDinerListResponse::of);
@@ -45,12 +40,18 @@ public class DinerService {
     return paginate(diners, total, pageable);
   }
 
-  private Order getOrder(GetDinerListRequest request) {
+  private Pageable getPageable(GetDinerListRequest request) {
+    Order order;
     if (request.getSort() == DinerSort.DINER_NAME) {
-      return Order.asc(request.getSort().getField());
+      order = Order.asc(request.getSort().getField());
     } else {
-      return Order.desc(request.getSort().getField());
+      order = Order.desc(request.getSort().getField());
     }
+    return PageRequest.of(
+        request.getPage(),
+        request.getSize(),
+        Sort.by(order)
+    );
   }
 }
 
