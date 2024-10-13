@@ -14,3 +14,6 @@ Content-Type: application/json
     client.assert(response.body.link === "www.finenoodle.com");
   });
 %}
+
+### Get diner list
+GET http://localhost:8080/api/diners?page=0&size=20

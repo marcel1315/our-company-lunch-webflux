@@ -1,11 +1,19 @@
 package com.marceldev.ourcompanylunchwebflux.api.service.diner;
 
+import static com.marceldev.ourcompanylunchwebflux.api.service.operator.CustomOperators.paginate;
+
 import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.CreateDinerRequest;
 import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.CreateDinerResponse;
+import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.GetDinerListRequest;
+import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.GetDinerListResponse;
 import com.marceldev.ourcompanylunchwebflux.domain.diner.DinerEntity;
 import com.marceldev.ourcompanylunchwebflux.domain.diner.DinerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -19,4 +27,18 @@ public class DinerService {
     return dinerRepository.save(dinerEntity)
         .map(CreateDinerResponse::of);
   }
+
+  public Mono<Page<GetDinerListResponse>> getDinerList(GetDinerListRequest request) {
+    Pageable pageable = PageRequest.of(
+        request.getPage(),
+        request.getSize()
+    );
+
+    Mono<Long> total = dinerRepository.count();
+    Flux<GetDinerListResponse> diners = dinerRepository.findAllBy(pageable)
+        .map(GetDinerListResponse::of);
+
+    return paginate(diners, total, pageable);
+  }
 }
+
