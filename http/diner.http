@@ -15,5 +15,25 @@ Content-Type: application/json
   });
 %}
 
+###
+POST http://localhost:8080/api/diners
+Content-Type: application/json
+
+{
+  "name": "Fine Noodle 2",
+  "link": "www.finenoodle2.com"
+}
+
+> {%
+  client.test("Diner created", function() {
+    client.assert(response.status === 200);
+    client.assert(response.body.name === "Fine Noodle 2");
+    client.assert(response.body.link === "www.finenoodle2.com");
+  });
+%}
+
 ### Get diner list
-GET http://localhost:8080/api/diners?page=0&size=20
+GET http://localhost:8080/api/diners?page=0&size=20&sort=DINER_NAME
+
+### Get diner list
+GET http://localhost:8080/api/diners?page=0&size=20&sort=CREATED_AT

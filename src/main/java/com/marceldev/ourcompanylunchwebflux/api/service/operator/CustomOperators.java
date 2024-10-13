@@ -1,6 +1,5 @@
 package com.marceldev.ourcompanylunchwebflux.api.service.operator;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +14,5 @@ public class CustomOperators {
             flux.collectList()
                 .map(items -> new PageImpl<>(items, pageable, count))
         );
-  }
-
-  public static <T> Mono<Page<T>> toPage(List<T> items, Pageable pageable, Long total) {
-    return Mono.just(new PageImpl<>(items, pageable, total));
   }
 }
