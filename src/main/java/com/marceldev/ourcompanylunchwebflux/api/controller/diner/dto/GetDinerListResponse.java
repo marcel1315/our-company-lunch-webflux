@@ -7,17 +7,20 @@ import lombok.Getter;
 @Getter
 public class GetDinerListResponse {
 
+  private final Long id;
   private final String name;
   private final String link;
 
   @Builder
-  private GetDinerListResponse(String name, String link) {
+  private GetDinerListResponse(Long id, String name, String link) {
+    this.id = id;
     this.name = name;
     this.link = link;
   }
 
   public static GetDinerListResponse of(DinerEntity dinerEntity) {
     return GetDinerListResponse.builder()
+        .id(dinerEntity.getId())
         .name(dinerEntity.getName())
         .link(dinerEntity.getLink())
         .build();

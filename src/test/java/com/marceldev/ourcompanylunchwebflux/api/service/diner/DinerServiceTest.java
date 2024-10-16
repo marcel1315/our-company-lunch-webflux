@@ -7,6 +7,7 @@ import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.CreateDiner
 import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.GetDinerListRequest;
 import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.GetDinerListResponse;
 import com.marceldev.ourcompanylunchwebflux.api.controller.diner.type.DinerSort;
+import com.marceldev.ourcompanylunchwebflux.api.controller.exception.DinerNotFoundException;
 import com.marceldev.ourcompanylunchwebflux.basic.IntegrationTest;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -54,10 +55,10 @@ class DinerServiceTest extends IntegrationTest {
     GetDinerListRequest request = createGetDinerListRequest(0, 10, DinerSort.DINER_NAME);
 
     // when
-    Mono<Page<GetDinerListResponse>> diner = dinerService.getDinerList(request);
+    Mono<Page<GetDinerListResponse>> diners = dinerService.getDinerList(request);
 
     // then
-    StepVerifier.create(diner.log())
+    StepVerifier.create(diners.log())
         .assertNext(response -> {
           assertThat(response.getContent()).hasSize(10);
           assertThat(response.getTotalElements()).isEqualTo(15);
@@ -72,10 +73,10 @@ class DinerServiceTest extends IntegrationTest {
     GetDinerListRequest request = createGetDinerListRequest(0, 10, DinerSort.DINER_NAME);
 
     // when
-    Mono<Page<GetDinerListResponse>> diner = dinerService.getDinerList(request);
+    Mono<Page<GetDinerListResponse>> diners = dinerService.getDinerList(request);
 
     // then
-    StepVerifier.create(diner.log())
+    StepVerifier.create(diners.log())
         .assertNext(response -> {
           assertThat(response.getContent()).hasSize(0);
         })
@@ -90,10 +91,10 @@ class DinerServiceTest extends IntegrationTest {
     GetDinerListRequest request = createGetDinerListRequest(0, 10, DinerSort.DINER_NAME);
 
     // when
-    Mono<Page<GetDinerListResponse>> diner = dinerService.getDinerList(request);
+    Mono<Page<GetDinerListResponse>> diners = dinerService.getDinerList(request);
 
     // then
-    StepVerifier.create(diner.log())
+    StepVerifier.create(diners.log())
         .assertNext(response -> {
           assertThat(response.getContent()).hasSize(3);
           assertThat(response.getContent()).extracting("name")
@@ -110,16 +111,45 @@ class DinerServiceTest extends IntegrationTest {
     GetDinerListRequest request = createGetDinerListRequest(0, 10, DinerSort.CREATED_AT);
 
     // when
-    Mono<Page<GetDinerListResponse>> diner = dinerService.getDinerList(request);
+    Mono<Page<GetDinerListResponse>> diners = dinerService.getDinerList(request);
 
     // then
-    StepVerifier.create(diner.log())
+    StepVerifier.create(diners.log())
         .assertNext(response -> {
           assertThat(response.getContent()).hasSize(3);
           assertThat(response.getContent()).extracting("name")
               .containsExactly("HiTaco", "Burger Queen", "Hello Diner");
         })
         .verifyComplete();
+  }
+
+  @Test
+  @DisplayName("Delete diner - Success")
+  void delete_diner() {
+    // given
+    CreateDinerResponse createDinerResponse = saveOneDiner();
+
+    // when
+    Mono<Void> response = dinerService.deleteDiner(createDinerResponse.getId());
+
+    // then
+    StepVerifier.create(response.log())
+        .verifyComplete();
+  }
+
+  @Test
+  @DisplayName("Delete diner - Fail(Diner not found with the diner id")
+  void delete_diner_no_diner() {
+    // given
+    CreateDinerResponse createDinerResponse = saveOneDiner();
+    dinerService.deleteDiner(createDinerResponse.getId()).subscribe();
+
+    // when
+    Mono<Void> response = dinerService.deleteDiner(createDinerResponse.getId());
+
+    // then
+    StepVerifier.create(response.log())
+        .verifyError(DinerNotFoundException.class);
   }
 
   // --- Private create request ---
@@ -133,6 +163,14 @@ class DinerServiceTest extends IntegrationTest {
   }
 
   // --- Private save ---
+
+  private CreateDinerResponse saveOneDiner() {
+    CreateDinerRequest request = CreateDinerRequest.builder()
+        .name("Frank fries")
+        .link("www.frankfries.com")
+        .build();
+    return dinerService.createDiner(request).block();
+  }
 
   private void saveDiner(int count) {
     Flux.range(0, count)
