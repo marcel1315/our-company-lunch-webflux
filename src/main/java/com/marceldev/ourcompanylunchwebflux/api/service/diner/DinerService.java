@@ -7,6 +7,7 @@ import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.CreateDiner
 import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.GetDinerListRequest;
 import com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto.GetDinerListResponse;
 import com.marceldev.ourcompanylunchwebflux.api.controller.diner.type.DinerSort;
+import com.marceldev.ourcompanylunchwebflux.api.controller.exception.DinerNotFoundException;
 import com.marceldev.ourcompanylunchwebflux.domain.diner.DinerEntity;
 import com.marceldev.ourcompanylunchwebflux.domain.diner.DinerRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,12 @@ public class DinerService {
         .map(GetDinerListResponse::of);
 
     return paginate(diners, total, pageable);
+  }
+
+  public Mono<Void> deleteDiner(Long dinerId) {
+    return dinerRepository.findById(dinerId)
+        .switchIfEmpty(Mono.error(new DinerNotFoundException(dinerId)))
+        .flatMap(dinerRepository::delete);
   }
 
   private Pageable getPageable(GetDinerListRequest request) {

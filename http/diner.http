@@ -37,3 +37,6 @@ GET http://localhost:8080/api/diners?page=0&size=20&sort=DINER_NAME
 
 ### Get diner list
 GET http://localhost:8080/api/diners?page=0&size=20&sort=CREATED_AT
+
+### Delete diner
+DELETE http://localhost:8080/api/diners/1
