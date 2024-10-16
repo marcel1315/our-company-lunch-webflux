@@ -1,0 +1,15 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  r2dbc:
+    url: r2dbc:h2:mem:///ourcompanylunchwebfluxtest
+    username: sa
+    password:
+  sql:
+    init:
+      schema-locations: classpath:sql/schema.sql
+logging:
+  level:
+    io.r2dbc.h2: DEBUG
+    org.springframework.data.r2dbc.core: DEBUG

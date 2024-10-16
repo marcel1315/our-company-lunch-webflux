@@ -1,11 +1,10 @@
 package com.marceldev.ourcompanylunchwebflux.api.controller.diner.dto;
 
 import com.marceldev.ourcompanylunchwebflux.domain.diner.DinerEntity;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public class CreateDinerRequest {
 
   private final String name;
@@ -16,5 +15,11 @@ public class CreateDinerRequest {
         .name(name)
         .link(link)
         .build();
+  }
+
+  @Builder
+  private CreateDinerRequest(String name, String link) {
+    this.name = name;
+    this.link = link;
   }
 }

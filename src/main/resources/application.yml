@@ -5,3 +5,7 @@ spring:
     url: r2dbc:mariadb://localhost:3306/ourcompanylunchwebflux
     username: root
     password: a1234
+logging:
+  level:
+    io.r2dbc.spi: DEBUG
+    org.springframework.data.r2dbc.core: DEBUG
