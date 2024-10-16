@@ -10,6 +10,7 @@ import com.marceldev.ourcompanylunchwebflux.api.controller.diner.type.DinerSort;
 import com.marceldev.ourcompanylunchwebflux.domain.diner.DinerEntity;
 import com.marceldev.ourcompanylunchwebflux.domain.diner.DinerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DinerService {
@@ -47,11 +49,6 @@ public class DinerService {
     } else {
       order = Order.desc(request.getSort().getField());
     }
-    return PageRequest.of(
-        request.getPage(),
-        request.getSize(),
-        Sort.by(order)
-    );
+    return PageRequest.of(request.getPage(), request.getSize(), Sort.by(order));
   }
 }
-
